@@ -2,7 +2,7 @@ import { Color, PieceSymbol, Square } from 'chess.js'
 import { useState } from 'react';
 import { MOVE } from '../screens/Game';
 
-const ChessBoard = ({ chess, setBoard, board, socket }: {
+const ChessBoard = ({ chess, setBoard, board, socket, setSelectedPiece }: {
   chess: any;
   setBoard: any;
   board: ({
@@ -11,6 +11,7 @@ const ChessBoard = ({ chess, setBoard, board, socket }: {
     color: Color;
   } | null)[][];
   socket: WebSocket;
+  setSelectedPiece: any;
 }) => {
   const [from, setFrom] = useState<null | Square>(null);
   const [to, setTo] = useState<null | Square>(null);
@@ -25,7 +26,10 @@ const ChessBoard = ({ chess, setBoard, board, socket }: {
               row.map((square, j) => {
                 const squareRepresentation = String.fromCharCode(97 + (j % 8)) + "" + (8 - i) as Square;
 
-                return <div key={j} onClick={() => {
+                return (
+                <div 
+                  key={j} 
+                  onClick={() => {
                   if (!from) {
                     setFrom(squareRepresentation);
                   } else {
@@ -48,16 +52,19 @@ const ChessBoard = ({ chess, setBoard, board, socket }: {
                       }
                     );
                     setBoard(chess.board());
+                    setSelectedPiece(null);
                     console.log({
                       from,
                       to: squareRepresentation
                     })
                   }
                 }} className={`w-16 h-16 flex justify-center items-center ${i % 2 === j % 2 ? 'bg-gray-300' : 'bg-gray-500'}`}>
-                  {square ? <img className="w-12" src={`/${square.color}${square.type}.png`} />
-                  : null}
-                  
+                  {square ? 
+                  <img className="w-12" src={`/${square.color}${square.type}.png`} />
+                    : null}
+
                 </div>
+                )
               })
             }
           </div>
